@@ -1,0 +1,18 @@
+library(lubridate)
+library(dplyr)
+data<-read.table("household_power_consumption.txt",sep=";",header = TRUE)
+data$Date<-dmy(data$Date)
+subdata<-subset(data,Date == ymd("2007-2-1")|Date == ymd("2007-2-2"))
+subdata$Global_active_power<-as.numeric(as.character(subdata$Global_active_power))
+subdata<-subdata%>% mutate(TD = as.POSIXct(paste(Date,Time),format="%Y-%m-%d %H:%M:%S") )
+subdata$Sub_metering_1 <-as.numeric(as.character(subdata$Sub_metering_1))
+subdata$Sub_metering_2 <-as.numeric(as.character(subdata$Sub_metering_2))
+subdata$Sub_metering_3 <-as.numeric(as.character(subdata$Sub_metering_3))
+png("plot3.png", height = 480, width = 480)
+plot(subdata$Sub_metering_1 ~ subdata$TD , type = "l",xlab ="",ylab="")
+lines(subdata$Sub_metering_2 ~ subdata$TD , type = "l", col = "red")
+lines(subdata$Sub_metering_3 ~ subdata$TD , type = "l", col = "blue")
+legend("topright",legend= c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),col=c("black", "red","blue"),lty = 1 )
+dev.off()
+
+      
